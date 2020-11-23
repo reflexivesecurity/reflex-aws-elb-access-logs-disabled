@@ -9,7 +9,6 @@ from reflex_core import AWSRule, subscription_confirmation
 class ElbAccessLogsDisabled(AWSRule):
     """ Rule to detect when an ELB does not have logging enabled or logging is disabled. """
 
-
     elb_client = boto3.client("elb")
     alb_client = boto3.client("elbv2")
 
@@ -30,9 +29,18 @@ class ElbAccessLogsDisabled(AWSRule):
         """
         # TODO: Implement a check for determining if the resource is compliant
 
+        lb_describe = alb_client.describe_load_balancers(Names=[self.load_balancer_name])
+        lb_arn = lb_describe['LoadBalancers'][0]['LoadBalancerArn']
+        arn_describe = alb_client.describe_load_balancer_attributes(LoadBalancerArn=lb_arn)
+        attributes = arn_describe['Attributes']
+        for attribute in attributes:
+            if attribute.get('Key') == 'access_logs.s3.enabled':
+                if attribute.get('Value') == 'false':
+                    print('alert value is false!!!')
+
     def get_remediation_message(self):
         """ Returns a message about the remediation action that occurred """
-        
+
         return f"The load balancer {self.load_balancer_name} has access logs disabled."
 
 
