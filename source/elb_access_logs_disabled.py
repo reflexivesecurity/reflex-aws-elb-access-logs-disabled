@@ -7,21 +7,20 @@ from reflex_core import AWSRule, subscription_confirmation
 
 
 class ElbAccessLogsDisabled(AWSRule):
-    """ TODO: A description for your rule """
+    """ Rule to detect when an ELB does not have logging enabled or logging is disabled. """
 
-    # TODO: Instantiate whatever boto3 client you'll need, if any.
-    # Example:
-    # client = boto3.client("s3")
+
+    elb_client = boto3.client("elb")
+    alb_client = boto3.client("elbv2")
 
     def __init__(self, event):
         super().__init__(event)
 
     def extract_event_data(self, event):
         """ Extract required event data """
-        # TODO: Extract any data you need from the triggering event.
-        #
-        # Example:
-        # self.bucket_name = event["detail"]["requestParameters"]["bucketName"]
+
+        self.load_balancer_name = event["detail"]["responseElements"]["loadBalancers"][0]["loadBalancerName"]
+
 
     def resource_compliant(self):
         """
@@ -33,11 +32,8 @@ class ElbAccessLogsDisabled(AWSRule):
 
     def get_remediation_message(self):
         """ Returns a message about the remediation action that occurred """
-        # TODO: Provide a human readable message describing what occured. This
-        # message is sent in all notifications.
-        #
-        # Example:
-        # return f"The S3 bucket {self.bucket_name} was unencrypted. AES-256 encryption was enabled."
+        
+        return f"The load balancer {self.load_balancer_name} has access logs disabled."
 
 
 def lambda_handler(event, _):
