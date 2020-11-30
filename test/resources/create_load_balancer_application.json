@@ -1,0 +1,92 @@
+{
+    "version": "0",
+    "id": "f25a1d4e-c157-76e5-437b-128ed32ea4e8",
+    "detail-type": "AWS API Call via CloudTrail",
+    "source": "aws.elasticloadbalancing",
+    "account": "000000000",
+    "time": "2020-11-15T18:53:37Z",
+    "region": "us-east-1",
+    "resources": [],
+    "detail": {
+        "eventVersion": "1.05",
+        "userIdentity": {
+            "type": "AssumedRole",
+            "principalId": "AROAXHT4245PYQAHLD4SD:example",
+            "arn": "arn:aws:sts::000000000:assumed-role/OrganizationAccountAccessRole/example",
+            "accountId": "000000000",
+            "accessKeyId": "ASIATGH4246PVZ13KL2C",
+            "sessionContext": {
+                "sessionIssuer": {
+                    "type": "Role",
+                    "principalId": "AROAXVE4242PYQCUYD4SD",
+                    "arn": "arn:aws:iam::000000000:role/OrganizationAccountAccessRole",
+                    "accountId": "000000000",
+                    "userName": "OrganizationAccountAccessRole"
+                },
+                "webIdFederationData": {},
+                "attributes": {
+                    "mfaAuthenticated": "true",
+                    "creationDate": "2020-11-15T18:46:22Z"
+                }
+            }
+        },
+        "eventTime": "2020-11-15T18:53:37Z",
+        "eventSource": "elasticloadbalancing.amazonaws.com",
+        "eventName": "CreateLoadBalancer",
+        "awsRegion": "us-east-1",
+        "sourceIPAddress": "127.0.0.1",
+        "userAgent": "console.ec2.amazonaws.com",
+        "requestParameters": {
+            "securityGroups": [
+                "sg-ec8b40c0"
+            ],
+            "type": "application",
+            "ipAddressType": "ipv4",
+            "subnetMappings": [
+                {
+                    "subnetId": "subnet-12866d4d"
+                },
+                {
+                    "subnetId": "subnet-2916f94f"
+                }
+            ],
+            "name": "test-loadbalancer",
+            "scheme": "internet-facing"
+        },
+        "responseElements": {
+            "loadBalancers": [
+                {
+                    "loadBalancerName": "test-loadbalancer",
+                    "securityGroups": [
+                        "sg-ec8b40c0"
+                    ],
+                    "state": {
+                        "code": "provisioning"
+                    },
+                    "dNSName": "test-loadbalancer-1969136545.us-east-1.elb.amazonaws.com",
+                    "canonicalHostedZoneId": "Z35SXDOTRQ7X7K",
+                    "loadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:000000000:loadbalancer/app/test-loadbalancer/f6ae938caec66ebe",
+                    "type": "application",
+                    "vpcId": "vpc-fed6ed84",
+                    "availabilityZones": [
+                        {
+                            "loadBalancerAddresses": [],
+                            "subnetId": "subnet-12866d4d"
+                        },
+                        {
+                            "loadBalancerAddresses": [],
+                            "subnetId": "subnet-2916f94f"
+                        }
+                    ],
+                    "ipAddressType": "ipv4",
+                    "createdTime": "Nov 15, 2020 6:53:37 PM",
+                    "scheme": "internet-facing"
+                }
+            ]
+        },
+        "requestID": "8a57dc90-01fa-4b1c-93d4-65df96705736",
+        "eventID": "e5a64692-f7e9-416c-844e-e39e3e327902",
+        "eventType": "AwsApiCall",
+        "apiVersion": "2015-12-01"
+    }
+}

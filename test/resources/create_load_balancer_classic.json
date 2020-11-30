@@ -1,0 +1,70 @@
+{
+    "version": "0",
+    "id": "290ab383-0b6d-694f-3f2d-34f00b7083fb",
+    "detail-type": "AWS API Call via CloudTrail",
+    "source": "aws.elasticloadbalancing",
+    "account": "000000000",
+    "time": "2020-11-15T19:39:02Z",
+    "region": "us-east-1",
+    "resources": [],
+    "detail": {
+        "eventVersion": "1.05",
+        "userIdentity": {
+            "type": "AssumedRole",
+            "principalId": "AROAXHT4245PYQAHLD4SD:example",
+            "arn": "arn:aws:sts::000000000:assumed-role/OrganizationAccountAccessRole/example",
+            "accountId": "000000000",
+            "accessKeyId": "ASIATGH4246PVZ13KL2C",
+            "sessionContext": {
+                "sessionIssuer": {
+                    "type": "Role",
+                    "principalId": "AROAXHT4245PYQAHLD4SD",
+                    "arn": "arn:aws:iam::000000000:role/Example",
+                    "accountId": "000000000",
+                    "userName": "Example"
+                },
+                "webIdFederationData": {},
+                "attributes": {
+                    "mfaAuthenticated": "true",
+                    "creationDate": "2020-11-15T18:46:22Z"
+                }
+            }
+        },
+        "eventTime": "2020-11-15T19:39:02Z",
+        "eventSource": "elasticloadbalancing.amazonaws.com",
+        "eventName": "CreateLoadBalancer",
+        "awsRegion": "us-east-1",
+        "sourceIPAddress": "127.0.0.1",
+        "userAgent": "console.ec2.amazonaws.com",
+        "requestParameters": {
+            "subnets": [
+                "subnet-e0e712c1",
+                "subnet-962715a8",
+                "subnet-12866d4d",
+                "subnet-33c57b7e",
+                "subnet-2916f94f",
+                "subnet-3f1dbc31"
+            ],
+            "securityGroups": [
+                "sg-ec8b40c0"
+            ],
+            "loadBalancerName": "test-aws-loadbalancer-classic",
+            "listeners": [
+                {
+                    "protocol": "HTTP",
+                    "loadBalancerPort": 80,
+                    "instanceProtocol": "HTTP",
+                    "instancePort": 80
+                }
+            ],
+            "scheme": "internet-facing"
+        },
+        "responseElements": {
+            "dNSName": "test-aws-loadbalancer-classic-730368293.us-east-1.elb.amazonaws.com"
+        },
+        "requestID": "3d82269c-61f5-4999-a74a-75b50ca2729d",
+        "eventID": "7d073c49-b9ec-4b6f-8dfa-4ba6dcdeb2ef",
+        "eventType": "AwsApiCall",
+        "apiVersion": "2012-06-01"
+    }
+}
