@@ -5,7 +5,20 @@ module "assume_role" {
 
   function_name        = "ElbAccessLogsDisabled"
   custom_lambda_policy = <<EOF
-# TODO: Provide required lambda permissions policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeLoadBalancerAttributes"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+
 EOF
 
   lambda_execution_role_arn = "arn:aws:iam::${var.parent_account}:role/ReflexElbAccessLogsDisabledLambdaExecution"

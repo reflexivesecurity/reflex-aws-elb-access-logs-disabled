@@ -1,6 +1,6 @@
 # elb-access-logs-disabled
 
-TODO: Write a brief description of your rule and what it does.
+This rule detects when access logs are disabled or not enabled within an ELB. Supports both classic and advanced load balancers.
 
 ## Usage
 
