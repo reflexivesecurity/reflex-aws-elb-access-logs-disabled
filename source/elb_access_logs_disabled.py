@@ -14,12 +14,40 @@ class ElbAccessLogsDisabled(AWSRule):
 
     def __init__(self, event):
         super().__init__(event)
+        self.load_balancer_type = None
+        self.load_balancer_name = None
+        self.load_balancer_arn = None
 
     def extract_event_data(self, event):
         """ Extract required event data """
 
-        self.load_balancer_name = event["detail"]["responseElements"]["loadBalancers"][0]["loadBalancerName"]
+        if event["detail"]["eventName"] == "CreateLoadBalancer":
+            if event["detail"]["requestParameters"].get("type"):
+                self.load_balancer_type = event["detail"]["requestParameters"].get(
+                    "type"
+                )
+            else:
+                self.load_balancer_type = "classic"
 
+            if self.load_balancer_type == "classic":
+                self.load_balancer_name = event["detail"]["requestParameters"][
+                    "loadBalancerName"
+                ]
+            else:
+                self.load_balancer_name = event["detail"]["responseElements"][
+                    "loadBalancers"
+                ][0]["loadBalancerName"]
+        else:
+            if event["detail"]["requestParameters"].get("loadBalancerArn"):
+                self.load_balancer_arn = event["detail"]["requestParameters"].get(
+                    "loadBalancerArn"
+                )
+                self.load_balancer_type = "application"
+            else:
+                self.load_balancer_name = event["detail"]["requestParameters"].get(
+                    "loadBalancerName"
+                )
+                self.load_balancer_type = "classic"
 
     def resource_compliant(self):
         """
@@ -27,16 +55,26 @@ class ElbAccessLogsDisabled(AWSRule):
 
         Return True if it is compliant, and False if it is not.
         """
-        # TODO: Implement a check for determining if the resource is compliant
-
-        lb_describe = alb_client.describe_load_balancers(Names=[self.load_balancer_name])
-        lb_arn = lb_describe['LoadBalancers'][0]['LoadBalancerArn']
-        arn_describe = alb_client.describe_load_balancer_attributes(LoadBalancerArn=lb_arn)
-        attributes = arn_describe['Attributes']
-        for attribute in attributes:
-            if attribute.get('Key') == 'access_logs.s3.enabled':
-                if attribute.get('Value') == 'false':
-                    print('alert value is false!!!')
+        is_compliant = True
+        if self.load_balancer_type == "classic":
+            attribute_describe = elb_client.describe_load_balancer_attributes(
+                LoadBalancerName=self.load_balancer_name
+            )["LoadBalancerAttributes"]
+            is_compliant = attribute_describe["AccessLog"]["Enabled"]
+        else:
+            if self.load_balancer_name:
+                self.load_balancer_arn = alb_client.describe_load_balancers(
+                    Names=[self.load_balancer_name]
+                )["LoadBalancers"][0]["LoadBalancerArn"]
+            attribute_describe = alb_client.describe_load_balancer_attributes(
+                LoadBalancerArn=self.load_balancer_arn
+            )
+            attributes = attribute_describe["Attributes"]
+            for attribute in attributes:
+                if attribute.get("Key") == "access_logs.s3.enabled":
+                    if attribute.get("Value") == "false":
+                        is_compliant = False
+        return is_compliant
 
     def get_remediation_message(self):
         """ Returns a message about the remediation action that occurred """
