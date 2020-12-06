@@ -40,6 +40,7 @@ class ElbAccessLogsDisabled(AWSRule):
                     "loadBalancerArn"
                 )
                 self.load_balancer_type = "application"
+                self.load_balancer_name = None
                 self.service = 'elbv2'
             else:
                 self.load_balancer_name = event["detail"]["requestParameters"].get(
