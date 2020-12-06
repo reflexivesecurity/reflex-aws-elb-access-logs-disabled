@@ -14,9 +14,6 @@ class ElbAccessLogsDisabled(AWSRule):
 
     def __init__(self, event):
         super().__init__(event)
-        self.load_balancer_type = None
-        self.load_balancer_name = None
-        self.load_balancer_arn = None
 
     def extract_event_data(self, event):
         """ Extract required event data """
@@ -57,16 +54,16 @@ class ElbAccessLogsDisabled(AWSRule):
         """
         is_compliant = True
         if self.load_balancer_type == "classic":
-            attribute_describe = elb_client.describe_load_balancer_attributes(
+            attribute_describe = self.elb_client.describe_load_balancer_attributes(
                 LoadBalancerName=self.load_balancer_name
             )["LoadBalancerAttributes"]
             is_compliant = attribute_describe["AccessLog"]["Enabled"]
         else:
             if self.load_balancer_name:
-                self.load_balancer_arn = alb_client.describe_load_balancers(
+                self.load_balancer_arn = self.alb_client.describe_load_balancers(
                     Names=[self.load_balancer_name]
                 )["LoadBalancers"][0]["LoadBalancerArn"]
-            attribute_describe = alb_client.describe_load_balancer_attributes(
+            attribute_describe = self.alb_client.describe_load_balancer_attributes(
                 LoadBalancerArn=self.load_balancer_arn
             )
             attributes = attribute_describe["Attributes"]
