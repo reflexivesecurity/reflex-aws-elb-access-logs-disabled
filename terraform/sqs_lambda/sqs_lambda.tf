@@ -27,7 +27,7 @@ module "sqs_lambda" {
 EOF
 
   queue_name    = "ElbAccessLogsDisabled"
-  delay_seconds = 0
+  delay_seconds = 180
 
   target_id = "ElbAccessLogsDisabled"
 
