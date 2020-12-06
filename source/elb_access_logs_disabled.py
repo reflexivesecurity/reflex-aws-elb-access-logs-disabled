@@ -9,11 +9,9 @@ from reflex_core import AWSRule, subscription_confirmation
 class ElbAccessLogsDisabled(AWSRule):
     """ Rule to detect when an ELB does not have logging enabled or logging is disabled. """
 
-    elb_client = boto3.client("elb")
-    alb_client = boto3.client("elbv2")
-
     def __init__(self, event):
         super().__init__(event)
+        self.client = self.get_boto3_client()
 
     def extract_event_data(self, event):
         """ Extract required event data """
@@ -23,8 +21,10 @@ class ElbAccessLogsDisabled(AWSRule):
                 self.load_balancer_type = event["detail"]["requestParameters"].get(
                     "type"
                 )
+                self.service = 'elbv2'
             else:
                 self.load_balancer_type = "classic"
+                self.service = 'elb'
 
             if self.load_balancer_type == "classic":
                 self.load_balancer_name = event["detail"]["requestParameters"][
@@ -40,11 +40,13 @@ class ElbAccessLogsDisabled(AWSRule):
                     "loadBalancerArn"
                 )
                 self.load_balancer_type = "application"
+                self.service = 'elbv2'
             else:
                 self.load_balancer_name = event["detail"]["requestParameters"].get(
                     "loadBalancerName"
                 )
                 self.load_balancer_type = "classic"
+                self.service = 'elb'
 
     def resource_compliant(self):
         """
@@ -54,16 +56,16 @@ class ElbAccessLogsDisabled(AWSRule):
         """
         is_compliant = True
         if self.load_balancer_type == "classic":
-            attribute_describe = self.elb_client.describe_load_balancer_attributes(
+            attribute_describe = self.client.describe_load_balancer_attributes(
                 LoadBalancerName=self.load_balancer_name
             )["LoadBalancerAttributes"]
             is_compliant = attribute_describe["AccessLog"]["Enabled"]
         else:
             if self.load_balancer_name:
-                self.load_balancer_arn = self.alb_client.describe_load_balancers(
+                self.load_balancer_arn = self.client.describe_load_balancers(
                     Names=[self.load_balancer_name]
                 )["LoadBalancers"][0]["LoadBalancerArn"]
-            attribute_describe = self.alb_client.describe_load_balancer_attributes(
+            attribute_describe = self.client.describe_load_balancer_attributes(
                 LoadBalancerArn=self.load_balancer_arn
             )
             attributes = attribute_describe["Attributes"]
